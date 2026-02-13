@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADX // NEURAL PROTOCOL UI</title>
+    <style>
+        :root {
+            --neon: #00fff2;
+            --glitch-red: #ff0055;
+            --bg: #050508;
+            --ping-shake: 0px;
+        }
+
+        body, html {
+            background: var(--bg);
+            color: var(--neon);
+            font-family: 'Courier New', monospace;
+            margin: 0; padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            text-transform: uppercase;
+        }
+
+        /* --- VCR & GLITCH LAYER --- */
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.15) 50%),
+                        linear-gradient(90deg, rgba(255,0,0,0.02), rgba(0,255,0,0.01), rgba(0,0,255,0.02));
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none; z-index: 10;
+        }
+
+        #ui-wrapper {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            animation: jitter var(--speed, 0.2s) infinite;
+        }
+
+        /* --- SATELLITE MAP (CENTER) --- */
+        .map-box {
+            position: relative;
+            width: 260px; height: 260px;
+            border: 1px solid rgba(0, 255, 242, 0.2);
+            margin: auto;
+            background: radial-gradient(circle, rgba(0,255,242,0.03) 0%, transparent 80%);
+        }
+        .grid {
+            width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0,255,242,0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0,255,242,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .sat-dot {
+            position: absolute; width: 8px; height: 8px;
+            background: var(--neon); border-radius: 50%;
+            top: 50%; left: 50%; box-shadow: 0 0 10px var(--neon);
+            animation: orbit 12s infinite linear;
+        }
+
+        /* --- HUD ELEMENTS --- */
+        .hud-top { display: flex; justify-content: space-between; font-size: 12px; }
+        .log-box {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 250px; height: 120px; font-size: 9px;
+            border-left: 1px solid var(--neon); padding-left: 10px;
+            opacity: 0.6; overflow: hidden;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(110px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(110px) rotate(-360deg); }
+        }
+        @keyframes jitter {
+            0% { transform: translate(0); }
+            50% { transform: translate(var(--ping-shake), calc(var(--ping-shake) * -1)); }
+            100% { transform: translate(0); }
+        }
+    </style>
+</head>
+# Save your file in Termux first (nano index.html)
+# Then run these script cords:
+
+git add index.html
+git commit -m "Grand Launch: Integrated VCR, Map, and Neural HUD"
+git push origin main
+
+<body>
+    <div class="scanlines"></div>
+    <div id="ui-wrapper">
+        <div class="hud-top">
+            <div>SYSTEM: ADX-V3-SUPERNOVA</div>
+            <div>PING: <span id="ping-txt">24</span>MS</div>
+        </div>
+
+        <div class="map-box">
+            <div class="grid"></div>
+            <div class="sat-dot"></div>
+        </div>
+
+        <div class="log-box" id="log"></div>
+    </div>
+
+    <script>
+        const pingTxt = document.getElementById('ping-txt');
+        const log = document.getElementById('log');
+        const root = document.documentElement;
+
+        function updateNeuralState() {
+            // Random Ping Logic
+            const p = Math.floor(Math.random() * 600);
+            pingTxt.innerText = p;
+
+            // Balance Interference
+            const shake = p > 350 ? (p / 80) + "px" : "0px";
+            root.style.setProperty('--ping-shake', shake);
+
+            // Hex Log Generation
+            const entry = document.createElement('div');
+            entry.innerText = `> RECV: 0x${Math.random().toString(16).slice(2,10).toUpperCase()}`;
+            log.prepend(entry);
+            if(log.children.length > 10) log.removeChild(log.lastChild);
+        }
+
+        setInterval(updateNeuralState, 200);
+    </script>
+</body>
+</html>
